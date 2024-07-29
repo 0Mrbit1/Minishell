@@ -1,0 +1,4 @@
+1 - split the command line into smaller pieces based on white spaces or tabs.
+2 - classify each token to it's associated type.
+types are : words 
+Redirection :
