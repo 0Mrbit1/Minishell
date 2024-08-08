@@ -6,15 +6,15 @@
 /*   By: acharik <acharik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 13:14:36 by acharik           #+#    #+#             */
-/*   Updated: 2024/08/06 11:16:30 by acharik          ###   ########.fr       */
+/*   Updated: 2024/08/06 11:20:01 by acharik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 
-# include <unistd.h>
 # include <stdlib.h>
+# include <unistd.h>
 #ifndef BUFFER_SIZE
 #define BUFFER_SIZE 42
 #endif
@@ -55,7 +55,7 @@ char				*ft_strdup(const char *s1);
 char				*ft_substr(const char *s, unsigned int start, ssize_t len);
 char				*ft_strjoin(const char *s1, const char *s2);
 char				*ft_strtrim(const char *s1, const char *set);
-char				**ft_split(const char *s, char *delimiters);
+char				**ft_split(const char *str, char *delimiters);
 char				*ft_itoa(int n);
 char				*ft_strmapi(const char *s, char (*f)(unsigned int, char));
 void				ft_striteri(char *s, void (*f)(unsigned int, char *));
