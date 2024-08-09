@@ -1,116 +1,91 @@
 #include "../../include/minishell.h"
 
-char cmd_helper(char *cmd, char *PATH_VARIABLE, int start, int i)
+typedef enum {
+    INPUT_REDIRECTION,
+    OUTPUT_REDIRECTION,
+    OUTPUT_REDIRECTION_APPEND_MODE,
+    HERE_DOC,
+    PIPES,
+    WORD
+} TokenType;
+
+char is_INPUT_REDIRECTION(char *str) {
+    if (*str == '<')
+        return 1;
+    return 0;
+}
+
+char is_OUTPUT_REDIRECTION(char *str) {
+    if (*str ==  '>') 
+        return 1;
+    return 0;
+}
+
+char is_HERE_DOC(char *str) {
+    if (ft_strncmp(str, "<<", 2) == 0)
+        return 1;
+    return 0;
+}
+
+char is_OUTPUT_REDIRECTION_APPEND_MODE(char *str) {
+    if (ft_strncmp(str, ">>", 2) == 0)
+        return 1;
+    return 0;
+}
+
+char is_PIPES(char *str)
+{   
+	if (*str == '|')
+        return 1;
+    return 0;
+}
+
+char is_WORD(char *str)
 {
+	return 1; 
+}
 
-    char	*cmd_path;
-	char	*potencial_path;
+TokenType *tokenizer(char *prompt)
+{
+	typedef char (*redir_func_ptr)(char *);
+	int i;
+	int j;
+	char **split_prompt;
+	TokenType *tokens;
+	int token_count;
 
-	while (PATH_VARIABLE[i])
-	{
-		if (PATH_VARIABLE[i] == ':')
-		{
-			potencial_path = ft_substr(PATH_VARIABLE, start, i - start);
-			cmd_path = ft_strjoin(potencial_path, cmd);
-			free(potencial_path);
-			if (!access(cmd_path, X_OK))
-			{
-				free(cmd);
-				return (1);
+	i = 0;
+	j = 0;
+	token_count = 0;
+
+	redir_func_ptr redirection_functions[] = {
+		is_INPUT_REDIRECTION,
+		is_OUTPUT_REDIRECTION,
+		is_OUTPUT_REDIRECTION_APPEND_MODE,
+		is_HERE_DOC,
+		is_PIPES,
+		is_WORD
+	};
+
+	split_prompt = ft_split(prompt, " \t");
+
+	// Allocate memory for the tokens array (assuming we have enough tokens)
+	tokens = malloc(sizeof(TokenType) * ft_split_count(split_prompt));
+
+	while (split_prompt[i]) {
+		j = 0;
+		while (j < sizeof(redirection_functions) / sizeof(redirection_functions[0])) {
+			if (redirection_functions[j](split_prompt[i])) {
+				tokens[token_count++] = (TokenType)j;
+				break; // Stop checking other functions once a match is found
 			}
-			else
-				free(cmd_path);
-			start = ++i;
+			j++;
 		}
 		i++;
 	}
-	return (0);
+
+	// Free the split_prompt array
+	ft_free_split(split_prompt);
+
+	return tokens;
 }
-
-char	is_COMMAND(char *cmd, char *PATH_VARIABLE)
-{
-	char	*cmd_ath;
-
-	cmd = ft_strjoin("/", cmd);
-	cmd_path = cmd_helper(cmd, PATH_VARIABLE, 0, 0);
-	return (cmd_path);
-}
-char  is_COMMAND_FLAG()
-{
-        
-
-}
-    
-char is_WORD_NO_INTERPRET()
-{
-        
-
-}
-char is_WORD_INTERPRET()
-{
-
-
-}
-
-char is_INPUT_REDIRECTION()
-{
-
-
-}
-
-char is_OUTPUT_REDIRECTION()
-{
-
-
-}
-
-char is_HERE_DOC()
-{
-
-
-}
-
-char  is_HERE_DOC_DELIMITER()
-{
-        
-
-}
-
-char is_OUTPUT_REDIRECTION_APPEND_MODE()
-{
-        
-
-}
-    
-char is_PIPES()
-{
-
-
-}
-
-char is_ENV_VARIABLE()
-{
-        
-}
-
-char is_BUILTINS ()
-{
-
-
-}
-
-
-token* tokenizer(char *prompt)
-{
-    char **split_prompt;
-
-    split_prompt = ft_split(prompt , " \t");
-
-
-
-
-
-}
-
-
-
