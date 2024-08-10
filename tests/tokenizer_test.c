@@ -1,71 +1,67 @@
-#include "libft.h"
-#include <stdio.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer_test.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdellah <abdellah@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/10 16:47:09 by abdellah          #+#    #+#             */
+/*   Updated: 2024/08/10 16:47:12 by abdellah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-typedef enum {
-    HERE_DOC, //0 << 
-	INPUT_REDIRECTION, //1 < 
-	OUTPUT_REDIRECTION_APPEND_MODE, //2 >> 
-    OUTPUT_REDIRECTION, //3 > 
-	PIPES, //4 | 
-	WORD //5 word
-} TokenType;
+#include "../include/minishell.h"
 
-typedef struct tokens
+token* setup_first_node(char **split_prompt , redir_func_ptr *redirection_functions)
 {
-    const char *value;
+    int j;
+    token* first_node ; 
 
-    TokenType token_type; 
-    
-    struct tokens *next;
-
-} token ;
-
-
-char is_INPUT_REDIRECTION(char *str) {
-    if (!ft_strncmp(str, "<", ft_strlen(str) + 1 ))
-        return 1;
-    return 0;
-}
-
-char is_OUTPUT_REDIRECTION(char *str) {
-    if (!ft_strncmp(str, ">", ft_strlen(str) + 1 ) ) 
-        return 1;
-    return 0;
-}
-
-char is_HERE_DOC(char *str) {
-    if (!ft_strncmp(str, "<<", ft_strlen(str) + 2))
+    j = 0 ;
+    while (j < 6) 
     {
-        return 1;
-    }
-    return 0;
+        if (redirection_functions[j](split_prompt[0]))
+        {
+            first_node = malloc(sizeof(token));
+            first_node -> value = ft_strdup(split_prompt[0]) ;
+            first_node -> token_type =  j;
+            first_node -> next = NULL;
+            return first_node;
+		}
+		j++;
+	}
+    return NULL;
 }
 
-char is_OUTPUT_REDIRECTION_APPEND_MODE(char *str) {
-    if (!ft_strncmp(str, ">>", ft_strlen(str) + 2 ))
-        return 1;
-    return 0;
-}
-
-char is_PIPES(char *str)
-{   
-	if (!ft_strncmp(str, "|", ft_strlen(str) + 1 ))
-        return 1;
-    return 0;
-}
-
-char is_WORD(char *str)
+void setup_nodes(char **split_prompt , redir_func_ptr *redirection_functions , token **first_node , int i , int j)
 {
-	return 1; 
+    token* node;
+
+    node = *first_node; 
+    while (split_prompt[i])
+    {
+		while (j < 6) 
+        {
+			if (redirection_functions[j](split_prompt[i]))
+            {
+				node -> next = malloc(sizeof(token));   
+                node = node -> next;
+                node -> value = ft_strdup(split_prompt[i]) ;
+                node -> token_type =  j;
+                node -> next = NULL ;
+                break;
+			}
+			j++;
+		}
+        j = 0 ; 
+		i++;
+	}
 }
 
 token* tokenizer(char *prompt)
 {
 	typedef char (*redir_func_ptr)(char*);
-	int i;
-	int j;
 	char **split_prompt;
-    token* node;
     token* first_node;
 
 	redir_func_ptr redirection_functions[] = {
@@ -76,47 +72,10 @@ token* tokenizer(char *prompt)
 		is_PIPES,
 		is_WORD
 	};
-    i = 0;
-	j = 0;
-	
     split_prompt = ft_split(prompt, " \t");
-
-    while (j < 6) 
-    {
-        if (redirection_functions[j](split_prompt[i]))
-        {
-            first_node = malloc(sizeof(token));
-            first_node -> value = split_prompt[i] ;
-            first_node -> token_type =  j;
-            first_node -> next = NULL;
-            break;
-		}
-		j++;
-	}
-    i++;
-    j = 0;
-    node = first_node ; 
-	while (split_prompt[i])
-    {
-		while (j < 6) 
-        {
-			if (redirection_functions[j](split_prompt[i]))
-            {
-				node -> next = malloc(sizeof(token));
-                node = node -> next;
-                node -> value = split_prompt[i] ;
-                node -> token_type =  j;
-                node -> next = NULL ;
-                if (!i)
-                    first_node = node;
-                break;
-			}
-			j++;
-		}
-        j = 0 ; 
-		i++;
-	}
-
+    first_node = setup_first_node(split_prompt , redirection_functions);
+    setup_nodes(split_prompt ,redirection_functions ,&first_node , 1 , 0);
+    ft_free_split(split_prompt);
 	return first_node;
 }
 
@@ -124,8 +83,11 @@ token* tokenizer(char *prompt)
 int main(int argc  , char **argv )
 {
     token *node; 
+    token *first_node;
+    token *to_free;
 
     node = tokenizer(argv[1]) ;
+    first_node = node ; 
     
     while(node)
     {
@@ -133,6 +95,15 @@ int main(int argc  , char **argv )
          printf("type %u\n" , node->token_type);
          printf("________________________________\n");
         node = node-> next ; 
+    }
+    node = first_node ; 
+
+    while(node)
+    {
+        to_free = node ; 
+        free(node->value) ;
+        node = node -> next ; 
+        free(to_free);
     }
 
 }

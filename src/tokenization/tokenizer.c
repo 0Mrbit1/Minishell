@@ -1,91 +1,82 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenizer.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abdellah <abdellah@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/10 16:47:42 by abdellah          #+#    #+#             */
+/*   Updated: 2024/08/10 16:55:30 by abdellah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../include/minishell.h"
 
-typedef enum {
-    INPUT_REDIRECTION,
-    OUTPUT_REDIRECTION,
-    OUTPUT_REDIRECTION_APPEND_MODE,
-    HERE_DOC,
-    PIPES,
-    WORD
-} TokenType;
-
-char is_INPUT_REDIRECTION(char *str) {
-    if (*str == '<')
-        return 1;
-    return 0;
-}
-
-char is_OUTPUT_REDIRECTION(char *str) {
-    if (*str ==  '>') 
-        return 1;
-    return 0;
-}
-
-char is_HERE_DOC(char *str) {
-    if (ft_strncmp(str, "<<", 2) == 0)
-        return 1;
-    return 0;
-}
-
-char is_OUTPUT_REDIRECTION_APPEND_MODE(char *str) {
-    if (ft_strncmp(str, ">>", 2) == 0)
-        return 1;
-    return 0;
-}
-
-char is_PIPES(char *str)
-{   
-	if (*str == '|')
-        return 1;
-    return 0;
-}
-
-char is_WORD(char *str)
+token	*setup_first_node(char **split_prompt,
+		redir_func_ptr *redirection_functions)
 {
-	return 1; 
-}
+	int		j;
+	token	*first_node;
 
-TokenType *tokenizer(char *prompt)
-{
-	typedef char (*redir_func_ptr)(char *);
-	int i;
-	int j;
-	char **split_prompt;
-	TokenType *tokens;
-	int token_count;
-
-	i = 0;
 	j = 0;
-	token_count = 0;
+	while (j < 6)
+	{
+		if (redirection_functions[j](split_prompt[0]))
+		{
+			first_node = malloc(sizeof(token));
+			first_node->value = ft_strdup(split_prompt[0]);
+			first_node->token_type = j;
+			first_node->next = NULL;
+			return (first_node);
+		}
+		j++;
+	}
+	return (NULL);
+}
 
-	redir_func_ptr redirection_functions[] = {
-		is_INPUT_REDIRECTION,
-		is_OUTPUT_REDIRECTION,
-		is_OUTPUT_REDIRECTION_APPEND_MODE,
-		is_HERE_DOC,
-		is_PIPES,
-		is_WORD
-	};
+void	setup_nodes(char **split_prompt, redir_func_ptr *redirection_functions,
+		token **first_node, int i)
+{
+	token	*node;
+	int		j;
 
-	split_prompt = ft_split(prompt, " \t");
-
-	// Allocate memory for the tokens array (assuming we have enough tokens)
-	tokens = malloc(sizeof(TokenType) * ft_split_count(split_prompt));
-
-	while (split_prompt[i]) {
-		j = 0;
-		while (j < sizeof(redirection_functions) / sizeof(redirection_functions[0])) {
-			if (redirection_functions[j](split_prompt[i])) {
-				tokens[token_count++] = (TokenType)j;
-				break; // Stop checking other functions once a match is found
+	node = *first_node;
+	j = 0;
+	while (split_prompt[i])
+	{
+		while (j < 6)
+		{
+			if (redirection_functions[j](split_prompt[i]))
+			{
+				node->next = malloc(sizeof(token));
+				node = node->next;
+				node->value = ft_strdup(split_prompt[i]);
+				node->token_type = j;
+				node->next = NULL;
+				break ;
 			}
 			j++;
 		}
+		j = 0;
 		i++;
 	}
+}
 
-	// Free the split_prompt array
+token	*tokenizer(char *prompt)
+{
+	redir_func_ptr	redirection_functions[6];
+	char			**split_prompt;
+	token			*first_node;
+
+	redirection_functions[0] = is_HERE_DOC;
+	redirection_functions[1] = is_INPUT_REDIRECTION;
+	redirection_functions[2] = is_OUTPUT_REDIRECTION_APPEND_MODE;
+	redirection_functions[3] = is_OUTPUT_REDIRECTION;
+	redirection_functions[4] = is_PIPES;
+	redirection_functions[5] = is_WORD;
+	split_prompt = ft_split(prompt, " \t");
+	first_node = setup_first_node(split_prompt, redirection_functions);
+	setup_nodes(split_prompt, redirection_functions, &first_node, 1);
 	ft_free_split(split_prompt);
-
-	return tokens;
+	return (first_node);
 }

@@ -1,21 +1,42 @@
 #include "libft.h"
 
+typedef char (*redir_func_ptr)(char*);
 
-typedef enum token_types
-{
-    INPUT_REDIRECTION,
-    OUTPUT_REDIRECTION,
-    OUTPUT_REDIRECTION_APPEND_MODE,
-    HERE_DOC,
-    PIPES,
-    WORD
-}type;
+typedef enum {
+    HERE_DOC, 
+	INPUT_REDIRECTION, 
+	OUTPUT_REDIRECTION_APPEND_MODE,
+    OUTPUT_REDIRECTION, 
+	PIPES, 
+	WORD 
+} TokenType;
 
 typedef struct tokens
 {
-    const char *value ;
+    char *value;
 
-    type    token_type ; 
+    TokenType token_type; 
+    
+    struct tokens *next;
 
 } token ;
+
+
+
+char is_INPUT_REDIRECTION(char *str) ;
+
+
+char is_OUTPUT_REDIRECTION(char *str) ;
+
+
+char is_HERE_DOC(char *str) ;
+
+
+char is_OUTPUT_REDIRECTION_APPEND_MODE(char *str) ;
+
+
+char is_PIPES(char *str);
+
+
+char is_WORD(char *str);
 
