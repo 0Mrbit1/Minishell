@@ -8,8 +8,7 @@ pid_t first_child_processe(char *cmd_path , int *pipefd , char **env )
 
     char *arg1 = NULL;
     char *arg2 = NULL;
-
-     char *args[] = {cmd_path, arg1, arg2, NULL};
+    char *args[] = {cmd_path, arg1, arg2, NULL};
 
     if (!pid)
     {
@@ -108,14 +107,13 @@ int main(int argc , char **argv , char **env)
 
     first_child_processe(argv[i++] , pipefd , env) ; 
 
-    while (i < argc - 1) 
+    while (i < argc  - 1 ) 
     {
         middle_child_processes(argv[i] , pipefd , env );
         i++;
     }
 
     ending_child_processe(argv[i] , pipefd , env) ; 
-
     close(pipefd[0]);
     close(pipefd[1]);
     while (wait(NULL) > 0);
