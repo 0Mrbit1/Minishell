@@ -1,5 +1,6 @@
 #include "libft.h"
 
+char	*is_command(char *cmd, char **envp);
 pid_t first_child_processe(char *cmd_path , int *pipefd , char **env )
 {
     pid_t pid;
@@ -14,7 +15,7 @@ pid_t first_child_processe(char *cmd_path , int *pipefd , char **env )
     {
         close(pipefd[0]);
         if (dup2(pipefd[1] ,   STDOUT_FILENO ) < 0 )
-        {
+        {   
             perror("There was an error dupping the first child process");
             exit(EXIT_FAILURE) ;
         }
@@ -92,6 +93,7 @@ int main(int argc , char **argv , char **env)
 {
     int i ;
     int pipefd[2];
+    char *cmd_path;
 
     i = 1 ; 
     if (argc < 2)
@@ -104,16 +106,24 @@ int main(int argc , char **argv , char **env)
         perror("There was an error creating the pipe");
         exit(EXIT_FAILURE);
     }
-
-    first_child_processe(argv[i++] , pipefd , env) ; 
-
+    cmd_path = is_command(argv[i], env);
+    if (!cmd_path)
+        cmd_path = argv[i] ; 
+    first_child_processe(cmd_path , pipefd , env) ; 
+    i++;
     while (i < argc  - 1 ) 
     {
-        middle_child_processes(argv[i] , pipefd , env );
+        cmd_path = is_command(argv[i], env);
+        if (!cmd_path)
+            cmd_path = argv[i] ; 
+        middle_child_processes(cmd_path , pipefd , env );
         i++;
     }
+    cmd_path = is_command(argv[i], env);
+    if (!cmd_path)
+        cmd_path = argv[i] ; 
 
-    ending_child_processe(argv[i] , pipefd , env) ; 
+    ending_child_processe(cmd_path , pipefd , env) ; 
     close(pipefd[0]);
     close(pipefd[1]);
     while (wait(NULL) > 0);
