@@ -46,10 +46,9 @@ pid_t output_redirection(int output_file_fd , char *cmd_path , char **args , cha
 {
 
     pid_t pid;
-    char **argv ; 
+    char *argv[1] ; 
 
-    argv = malloc(sizeof(char*)) ; 
-    argv[0] = NULL ;
+    argv[0] = NULL; 
 
     if (output_file_fd < 0)
     {
@@ -144,8 +143,11 @@ char*  get_file_data(int output_file_fd)
     output_redirection( output_file_fd , cmd_path , args , env);
     command_ouput =   get_file_data( output_file_fd) ; 
     final_append = ft_strjoin (file_data , command_ouput) ;
+    free(file_data);
+    free(command_ouput);
     fd = open(args[2] , O_RDWR );
     write(fd , final_append , ft_strlen(final_append));
+    free(final_append);
 
 
  }
