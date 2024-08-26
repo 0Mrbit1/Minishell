@@ -175,42 +175,62 @@ char*  get_file_data(int output_file_fd)
     return pid;
  }
 
- /*void input_redirection_herdoc(char *delimiter , char *cmd)
+ void input_redirection_herdoc(char *delimiter  , char **env)
  {
 
     int fd ;
     int delimiter_len;
     char *buffer;
-    int bytes_read ; 
+    int bytes_read; 
+    char *argv[1] ; 
 
-    fd = open("herdoc" , O_RDWR | O_CREAT );
+    argv[0] = NULL ; 
+
+    fd = open("herdoc" , O_RDWR | O_CREAT , 0644 );
     delimiter_len = ft_strlen(delimiter);
-
-    while(1)
+    buffer = malloc(sizeof(char)*delimiter_len  + 1 ) ; 
+     while(1)
     {
         bytes_read = read (STDIN_FILENO , buffer , delimiter_len) ;
         buffer[bytes_read] = '\0'; 
-
-        if (!ft_strncmp(buffer, delimiter, ft_strlen(buffer) + delimiter_len ) ) 
+        if (!ft_strncmp(buffer, delimiter, ft_strlen(buffer) + delimiter_len )) 
         {
-            break ;
+            break;
         }
-
+        write(fd , buffer , ft_strlen(buffer)) ;
     }
+    free(buffer) ; 
+    fd = open("herdoc" , O_RDWR , 0644 );
+    if ( dup2(fd , STDIN_FILENO) < 0 ) 
+    {
+        perror("There was an error redirecting stdin") ; 
+        exit(1);
+    }
+    pid_t pid ; 
+    pid = fork() ; 
 
- }*/
+    if (!pid)
+    {
+        if ( execve("/usr/bin/cat" , argv , env) <  0 ) 
+        {
+            perror("There was an error executing the command ") ; 
+            exit (1);
+        }
+    }
+    unlink("herdoc");
+ }
 
 int main(int argc , char **argv , char **env)
 {
     int fd ;
 
-    if (argc < 2 )
+    /*if (argc < 2 )
     {
         perror("Please give some argument");
         exit(1);
-    }
+    }*/
 
-    fd = open(argv[2] , O_RDWR | O_CREAT | O_APPEND , 0644 );
+    //fd = open(argv[2] , O_RDWR | O_CREAT | O_APPEND , 0644 );
 
-   output_redirection_append_mode2(argv[1]  , argv , env , fd);
+   input_redirection_herdoc("end"  , env );
 }
