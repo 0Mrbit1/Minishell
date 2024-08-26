@@ -7,10 +7,7 @@ pid_t output_redirection(char *file_path , char *cmd_path , char **argv , char *
 
     output_file_fd = open(file_path , O_WRONLY  , 0644 );
     if (output_file_fd < 0)
-    {
-        perror("There was an error openning the input file");
-        exit(1);
-    }
+         output_error_exit("There was an error openning the output file" , 1);
     dup_fds(output_file_fd , STDOUT_FILENO ) ; 
     return execute_command(cmd_path , argv , env) ;
 }

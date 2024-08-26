@@ -1,44 +1,42 @@
 #include "../../include/libft.h"
 
-void input_redirection_herdoc(char *delimiter  , char **env , char **argv)
- {
 
-    int fd ;
+void redidrect_stdin_to_herdoc(char *delimiter )
+{
+    int heredoc_fd ;
     int delimiter_len;
     char *buffer;
     int bytes_read; 
 
-    fd = open("herdoc" , O_RDWR | O_CREAT , 0644 );
+
+    heredoc_fd = open("heredoc" , O_RDWR | O_CREAT , 0644 );
+    if (heredoc_fd < 0)
+        output_error_exit("there was an error creating herdoc file" , 1);
     delimiter_len = ft_strlen(delimiter);
     buffer = malloc(sizeof(char)*delimiter_len  + 1 ) ; 
-     while(1)
+    if (!buffer)
+        output_error_exit("Not Enought memory" , 1);
+    while(1)
     {
         bytes_read = read (STDIN_FILENO , buffer , delimiter_len) ;
         buffer[bytes_read] = '\0'; 
         if (!ft_strncmp(buffer, delimiter, ft_strlen(buffer) + delimiter_len )) 
-        {
             break;
-        }
-        write(fd , buffer , ft_strlen(buffer)) ;
+        write(heredoc_fd , buffer , ft_strlen(buffer)) ;
     }
-    free(buffer) ; 
-    fd = open("herdoc" , O_RDWR , 0644 );
-    if ( dup2(fd , STDIN_FILENO) < 0 ) 
-    {
-        perror("There was an error redirecting stdin") ; 
-        exit(1);
-    }
-    pid_t pid ; 
-    pid = fork() ; 
+    free(buffer);
+}
 
-    if (!pid)
-    {
-        if ( execve("/usr/bin/cat" , argv , env) <  0 ) 
-        {
-            perror("There was an error executing the command ") ; 
-            exit (1);
-        }
-    }
-    unlink("herdoc");
+void input_redirection_herdoc(char *delimiter  , char *cmd_path , char **argv , char **env)
+ {
+    int heredoc_fd ; 
+    
+    redidrect_stdin_to_herdoc(delimiter ); 
+    heredoc_fd  = open("herdoc" , O_RDWR , 0644 );
+     if (heredoc_fd < 0)
+        output_error_exit("there was an error openning herdoc file" , 1);
+    dup_fds(heredoc_fd , STDIN_FILENO);
+    execute_command(cmd_path ,argv , env);
+    unlink("heredoc");
  }
 

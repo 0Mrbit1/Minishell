@@ -9,10 +9,7 @@ pid_t execute_command(char *command_path , char **argv , char **env)
     if (!pid)
     {
         if ( execve(command_path , argv , env) < 0 ) 
-        {
-            perror("There was an error executing the command ") ; 
-            exit (1);
-        }
+            output_error_exit("there was en error executing the command" , 1);
     }
     return pid;
 }

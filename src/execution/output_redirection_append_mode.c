@@ -6,10 +6,7 @@
 
     output_file_fd = open(file_path , O_WRONLY | O_APPEND , 0644 );
     if (output_file_fd < 0)
-    {
-        perror("There was an error openning the input file");
-        exit(1);
-    }
+        output_error_exit("there was an error openning the output file" , 1);
     dup_fds(output_file_fd , STDOUT_FILENO ) ; 
     return execute_command(cmd_path ,argv , env) ;
  }
