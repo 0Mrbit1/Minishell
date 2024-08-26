@@ -9,7 +9,7 @@ void redidrect_stdin_to_herdoc(char *delimiter )
     int bytes_read; 
 
 
-    heredoc_fd = open("heredoc" , O_RDWR | O_CREAT , 0644 );
+    heredoc_fd = open(".heredoc" , O_RDWR | O_CREAT , 0644 );
     if (heredoc_fd < 0)
         output_error_exit("there was an error creating herdoc file" , 1);
     delimiter_len = ft_strlen(delimiter);
@@ -32,11 +32,11 @@ void input_redirection_herdoc(char *delimiter  , char *cmd_path , char **argv , 
     int heredoc_fd ; 
     
     redidrect_stdin_to_herdoc(delimiter ); 
-    heredoc_fd  = open("herdoc" , O_RDWR , 0644 );
+    heredoc_fd  = open(".herdoc" , O_RDWR , 0644 );
      if (heredoc_fd < 0)
         output_error_exit("there was an error openning herdoc file" , 1);
     dup_fds(heredoc_fd , STDIN_FILENO);
     execute_command(cmd_path ,argv , env);
-    unlink("heredoc");
+    unlink(".heredoc");
  }
 
