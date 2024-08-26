@@ -22,21 +22,3 @@ typedef struct tokens
 } token ;
 
 
-
-char is_INPUT_REDIRECTION(char *str) ;
-
-
-char is_OUTPUT_REDIRECTION(char *str) ;
-
-
-char is_HERE_DOC(char *str) ;
-
-
-char is_OUTPUT_REDIRECTION_APPEND_MODE(char *str) ;
-
-
-char is_PIPES(char *str);
-
-
-char is_WORD(char *str);
-

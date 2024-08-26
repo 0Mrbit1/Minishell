@@ -6,7 +6,7 @@
 /*   By: acharik <acharik@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 13:14:36 by acharik           #+#    #+#             */
-/*   Updated: 2024/08/06 11:16:30 by acharik          ###   ########.fr       */
+/*   Updated: 2024/08/15 16:30:39 by acharik          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 # include <unistd.h>
 # include <stdlib.h>
+#include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <stdio.h>
 #ifndef BUFFER_SIZE
 #define BUFFER_SIZE 42

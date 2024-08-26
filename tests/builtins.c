@@ -1,6 +1,6 @@
 #include "libft.h"
 
-void echo(int line , char *str)
+void ft_echo(int line , char *str)
 {
     //echo by default output a line
 
@@ -11,14 +11,12 @@ void echo(int line , char *str)
     }
     else
         write(STDIN_FILENO , str , sizeof(char)*ft_strlen(str) );
-
 }
 
-void env(char **envp  )
+void ft_env(char **envp  )
 {
 
     int i ;
-
     i = 0 ;
 
     while(envp[i])
@@ -26,6 +24,11 @@ void env(char **envp  )
         printf("%s" , envp[i]);
         i++;
     }
-
-
 }
+
+void ft_cd()
+
+{
+    
+}
+
