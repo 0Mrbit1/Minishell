@@ -15,7 +15,6 @@ void ft_echo(int line , char *str)
 
 void ft_env(char **envp  )
 {
-
     int i ;
     i = 0 ;
 
@@ -28,6 +27,7 @@ void ft_env(char **envp  )
 
 void ft_cd()
 {
+
     
 }
 

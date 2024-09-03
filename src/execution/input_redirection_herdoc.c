@@ -1,6 +1,5 @@
 #include "../../include/libft.h"
 
-
 void redidrect_stdin_to_herdoc(char *delimiter )
 {
     int heredoc_fd ;
