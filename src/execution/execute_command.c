@@ -1,4 +1,4 @@
-#include "../../include/libft.h"
+#include "../../include/minishell.h"
 
 pid_t execute_command(char *command_path , char **argv , char **env)
 {

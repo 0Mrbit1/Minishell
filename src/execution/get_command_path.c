@@ -1,4 +1,4 @@
-#include "../../include/libft.h"
+#include "../../include/minishell.h"
 
 char *check_if_dir(char *cmd_path  )
 {

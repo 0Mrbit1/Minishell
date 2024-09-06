@@ -1,4 +1,4 @@
-#include "../include/minishell.h"
+#include "../../include/minishell.h"
 
 void ft_echo(int line , char *str)
 {
@@ -23,35 +23,34 @@ void ft_env(char **envp)
     }
 }
 
-void ft_cd(char* path)
+char ft_cd(char* path)
 {
-    char *current_path ; 
+    char *current_path; 
     struct stat fstats;
+    int path_len ;
 
-    current_path = malloc(sizeof(char)  *  (  ft_strlen (path)  + 1    )   ) ;
+
+    path_len = ft_strlen (path)  + 1 ;
+
     if (stat(path, &fstats) < 0)
     {
-        perror("stat");
-        exit(EXIT_FAILURE);
+        perror("there was an error getting the file stats");
+        return -1; 
     }
     if (!S_ISDIR(fstats.st_mode))
     {
-        printf("Not a directory");
-        exit(EXIT_FAILURE);
+        perror("Not a directory");
+        return -1;
     }
-    if (access(path, X_OK) )
+    if (access(path, X_OK))
     {
-       perror("error");
-       exit(EXIT_FAILURE);
-    } 
+        perror("cannot access the directory");
+        return -1;
+    }
     chdir(path); 
-    getcwd(current_path , ft_strlen (path)  + 1); 
+     current_path = malloc(sizeof(char)  * path_len  ) ;
+    getcwd(current_path , path_len); 
     printf("%s" , current_path ); 
     free(current_path);
+    return 0;
 }
-
-int main(int argc , char **argv)
-{
-    ft_cd(argv[1]);
-}
-

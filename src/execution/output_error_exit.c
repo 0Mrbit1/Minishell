@@ -1,4 +1,4 @@
-#include "../../include/libft.h"
+#include "../../include/minishell.h"
 
 void output_error_exit(char *error_msg , int status)
 {

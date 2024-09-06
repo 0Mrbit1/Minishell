@@ -1,4 +1,4 @@
-#include "../../include/libft.h"
+#include "../../include/minishell.h"
 
  pid_t output_redirection_append_mode(char *file_path , char *cmd_path  , char **argv , char **env)
  {

@@ -1,17 +1,16 @@
-#include "../../include/libft.h"
+#include "../../include/minishell.h"
 
-pid_t first_child_processe(char *cmd_path , int *pipefd , char **env )
+pid_t first_child_processe(char *cmd_path , char **argv , char **env, int *pipefd )
 {
     pid_t pid;
 
-    pid = fork(); 
+    pid = fork();
 
     if (!pid)
     {
         close(pipefd[0]);
         dup2(pipefd[1] ,   STDOUT_FILENO );
         execute_command(cmd_path , argv ,env);
-
     }
     return pid;
 }
@@ -21,7 +20,6 @@ pid_t middle_child_processes(char *cmd_path , char **argv ,  int *pipefd , char 
     pid_t pid;
 
     pid = fork(); 
-
     if (!pid)
     {
         dup_fds(pipefd[1] , STDOUT_FILENO);
@@ -31,7 +29,7 @@ pid_t middle_child_processes(char *cmd_path , char **argv ,  int *pipefd , char 
     return pid;
 }
 
-pid_t ending_child_processe(char *cmd_path , int *pipefd , char **env)
+pid_t ending_child_processe(char *cmd_path , char **argv , int *pipefd , char **env)
 {
     pid_t pid;
 

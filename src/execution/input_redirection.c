@@ -1,4 +1,4 @@
-#include "../../include/libft.h"
+#include "../../include/minishell.h"
 
 pid_t  input_redirection (char *file_path , char *cmd_path , char **argv , char **env)
 {

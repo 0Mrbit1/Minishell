@@ -1,4 +1,4 @@
-#include "../../include/libft.h"
+#include "../../include/minishell.h"
 
 void dup_fds(int old_fd , int new_fd)
 {

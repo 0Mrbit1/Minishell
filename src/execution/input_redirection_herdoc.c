@@ -1,4 +1,4 @@
-#include "../../include/libft.h"
+#include "../../include/minishell.h"
 
 void redidrect_stdin_to_herdoc(char *delimiter )
 {
