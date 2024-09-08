@@ -8,6 +8,9 @@ char *is_command(const char *cmd, char **env);
 pid_t first_child_processe(char *cmd_path , char **argv , char **env, int **pipefd , int j )
 {
     pid_t pid;
+    int i ;
+
+    i = 0;
 
     pid = fork();
     
@@ -19,6 +22,13 @@ pid_t first_child_processe(char *cmd_path , char **argv , char **env, int **pipe
     if (!pid)
     {
         dup2(pipefd[j][1] , STDOUT_FILENO);
+        
+        while (i < j)
+        {
+            close(pipefd[i][0]);
+            close(pipefd[i][1]);
+            i++;
+        }
         execute_command(cmd_path , argv ,env); 
     }
     return pid;
@@ -27,6 +37,9 @@ pid_t first_child_processe(char *cmd_path , char **argv , char **env, int **pipe
 pid_t middle_child_processes(char *cmd_path , char **argv ,  int **pipefd , char **env , int j )
 {
     pid_t pid;
+    int i ;
+
+    i = 0 ;
 
     pid = fork(); 
 
@@ -39,6 +52,13 @@ pid_t middle_child_processes(char *cmd_path , char **argv ,  int **pipefd , char
     {
         dup_fds(pipefd[j][1] , STDOUT_FILENO);
         dup_fds(pipefd[j-1][0] , STDIN_FILENO);
+
+        while (i < j)
+    {
+        close(pipefd[i][0]);
+        close(pipefd[i][1]);
+        i++;
+    }
         execute_command(cmd_path , argv , env);
     }
     return pid;
@@ -47,6 +67,9 @@ pid_t middle_child_processes(char *cmd_path , char **argv ,  int **pipefd , char
 pid_t ending_child_processe(char *cmd_path , char **argv , int **pipefd , char **env , int j )
 {
     pid_t pid;
+    int i ;
+
+    i = 0 ;
 
     pid = fork(); 
     
@@ -58,6 +81,13 @@ pid_t ending_child_processe(char *cmd_path , char **argv , int **pipefd , char *
     if (!pid)
     {
         dup_fds(pipefd[j-1][0] ,   STDIN_FILENO );
+
+           while (i < j)
+    {
+        close(pipefd[i][0]);
+        close(pipefd[i][1]);
+        i++;
+    }
         execute_command(cmd_path , argv , env);
     }
     return pid;
@@ -112,13 +142,10 @@ int pipex(int argc , char **argv , char **env)
     if ( pipe(fds[j]) < 0 )
         output_error_exit("There was an error creating the pipe" , EXIT_FAILURE);
     
-    av[0] = argv[i]; 
-
+    av[0] = argv[i];
     av[1] =  NULL;
-   
     ending_child_processe(cmd_path , av , fds , env , j );
     i = 0 ; 
-    
     while (i < j)
     {
         close(fds[i][0]);
