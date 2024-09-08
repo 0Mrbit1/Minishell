@@ -29,9 +29,7 @@ char ft_cd(char* path)
     struct stat fstats;
     int path_len ;
 
-
     path_len = ft_strlen (path)  + 1 ;
-
     if (stat(path, &fstats) < 0)
     {
         perror("there was an error getting the file stats");
