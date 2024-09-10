@@ -127,7 +127,6 @@ int main(int argc , char **argv , char **env )
     added_data = ft_export(new_env , "test=1337") ; 
     removed = ft_unset(added_data  , "ZSH");
     i = 0 ; 
-    
     while(added_data[i])
     {
         printf("%s\n" , added_data[i]);

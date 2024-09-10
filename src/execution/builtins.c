@@ -46,9 +46,31 @@ char ft_cd(char* path)
         return -1;
     }
     chdir(path); 
-     current_path = malloc(sizeof(char)  * path_len  ) ;
+    current_path = malloc(sizeof(char)  * path_len  ) ;
     getcwd(current_path , path_len); 
     printf("%s" , current_path ); 
     free(current_path);
     return 0;
+}
+
+char *ft_pwd()
+{
+
+    char    *buffer;
+    int     size;
+    char *current_dir ; 
+
+    size = 19 ;
+    buffer = malloc(sizeof(char)*size) ;
+
+   while (!getcwd (buffer ,  size ) )  
+   {
+        free(buffer);
+        size *= 2; 
+        buffer = malloc(sizeof(char)*size) ; 
+    }
+
+    current_dir = ft_strdup(buffer) ;
+    free(buffer);
+    return current_dir ;  
 }
