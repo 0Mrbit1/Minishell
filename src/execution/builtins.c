@@ -69,8 +69,7 @@ char *ft_pwd()
         size *= 2; 
         buffer = malloc(sizeof(char)*size) ; 
     }
-
     current_dir = ft_strdup(buffer) ;
     free(buffer);
-    return current_dir ;  
+    return current_dir ; 
 }

@@ -100,6 +100,7 @@ int pipex(int argc , char **argv , char **env)
     char *cmd_path;
     int **fds; 
     char *av[2] ; 
+    int status ; 
 
     fds = malloc(sizeof(int*)  *  ( argc - 1 ) );
     j = 0 ; 
@@ -144,7 +145,7 @@ int pipex(int argc , char **argv , char **env)
     
     av[0] = argv[i];
     av[1] =  NULL;
-    ending_child_processe(cmd_path , av , fds , env , j );
+    ending_child_processe( cmd_path ,  av ,  fds ,  env , j);
     i = 0 ; 
     while (i < j)
     {
@@ -152,7 +153,8 @@ int pipex(int argc , char **argv , char **env)
         close(fds[i][1]);
         i++;
     }
-    while (wait(NULL) != -1);
+    while (wait(&status) != -1);
+    printf("%d" , status) ; 
     return 0 ;
        
 }
