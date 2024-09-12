@@ -101,6 +101,9 @@ int pipex(int argc , char **argv , char **env)
     int **fds; 
     char *av[2] ; 
     int status ; 
+    int final_pid ;
+    int pid  ; 
+    char  final_status ;
 
     fds = malloc(sizeof(int*)  *  ( argc - 1 ) );
     j = 0 ; 
@@ -145,7 +148,7 @@ int pipex(int argc , char **argv , char **env)
     
     av[0] = argv[i];
     av[1] =  NULL;
-    ending_child_processe( cmd_path ,  av ,  fds ,  env , j);
+    final_pid = ending_child_processe( cmd_path ,  av ,  fds ,  env , j);
     i = 0 ; 
     while (i < j)
     {
@@ -153,9 +156,17 @@ int pipex(int argc , char **argv , char **env)
         close(fds[i][1]);
         i++;
     }
-    while (wait(&status) != -1);
-    printf("%d" , status) ; 
-    return 0 ;
+    while ( (pid = wait(&status) )  != -1) 
+    {
+        if (pid == final_pid)
+        {
+            final_status = status%256 ; 
+
+        }
+    }
+
+    printf("%d" , final_status) ; 
+    return 0 ; 
        
 }
 
