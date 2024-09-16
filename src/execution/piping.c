@@ -93,6 +93,14 @@ pid_t ending_child_processe(char *cmd_path , char **argv , int **pipefd , char *
     return pid;
 }
 
+void    is_exit_with_signal(int *status)
+{
+    if (WIFEXITED(*status))
+        *status = WEXITSTATUS(*status);
+    else if (WIFSIGNALED(*status))
+        *status = WTERMSIG(*status) + 128;
+} 
+
 int pipex(int argc , char **argv , char **env)
 {
     int i;
@@ -103,7 +111,7 @@ int pipex(int argc , char **argv , char **env)
     int status ; 
     int final_pid ;
     int pid  ; 
-    char  final_status ;
+    int  final_status ;
 
     fds = malloc(sizeof(int*)  *  ( argc - 1 ) );
     j = 0 ; 
@@ -152,16 +160,17 @@ int pipex(int argc , char **argv , char **env)
     i = 0 ; 
     while (i < j)
     {
+
         close(fds[i][0]);
         close(fds[i][1]);
         i++;
     }
-    while ( (pid = wait(&status) )  != -1) 
-    {
-        if (pid == final_pid)
-        {
-            final_status = status%256 ; 
 
+    while ((pid = wait(&status)) != -1) {
+        
+        if (pid == final_pid) {
+            final_status = status ; 
+           is_exit_with_signal(&final_status) ; 
         }
     }
 
