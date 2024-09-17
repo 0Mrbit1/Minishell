@@ -1,5 +1,4 @@
 # Variables
-CC = gcc
 CFLAGS = -Wall -Wextra
 AR = ar
 ARFLAGS = rcs
@@ -249,14 +248,30 @@ $(LIBDIR)/type_checkers.o: $(TOKEN_DIR)/type_checkers.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean rule
+# Clean rule
 clean:
-	rm -f $(LIBDIR)/*.o
+	rm -rf $(LIBDIR)/builtins.o $(LIBDIR)/execute_command.o $(LIBDIR)/get_command_path.o \
+	      $(LIBDIR)/input_redirection_herdoc.o $(LIBDIR)/output_redirection_append_mode.o \
+	      $(LIBDIR)/piping.o $(LIBDIR)/dup_fd.o $(LIBDIR)/expand.o \
+	      $(LIBDIR)/input_redirection.o $(LIBDIR)/output_error_exit.o \
+	      $(LIBDIR)/output_redirection.o $(LIBDIR)/parser.o \
+	      $(LIBDIR)/tokenizer.o $(LIBDIR)/type_checkers.o \
+	      $(LIBDIR)/libft_ft_isalpha.o $(LIBDIR)/libft_ft_isdigit.o $(LIBDIR)/libft_ft_isalnum.o \
+	      $(LIBDIR)/libft_ft_isascii.o $(LIBDIR)/libft_ft_isprint.o \
+	      $(LIBDIR)/libft_ft_strlen.o $(LIBDIR)/libft_ft_memset.o $(LIBDIR)/libft_ft_bzero.o \
+	      $(LIBDIR)/libft_ft_memcpy.o $(LIBDIR)/libft_ft_memmove.o $(LIBDIR)/libft_ft_strlcpy.o \
+	      $(LIBDIR)/libft_ft_strlcat.o $(LIBDIR)/libft_ft_toupper.o $(LIBDIR)/libft_ft_tolower.o \
+	      $(LIBDIR)/libft_ft_strchr.o $(LIBDIR)/libft_ft_strrchr.o $(LIBDIR)/libft_ft_strncmp.o \
+	      $(LIBDIR)/libft_ft_memchr.o $(LIBDIR)/libft_ft_memcmp.o $(LIBDIR)/libft_ft_strnstr.o \
+	      $(LIBDIR)/libft_ft_atoi.o $(LIBDIR)/libft_ft_calloc.o $(LIBDIR)/libft_ft_strdup.o \
+	      $(LIBDIR)/libft_ft_substr.o $(LIBDIR)/libft_ft_strjoin.o $(LIBDIR)/libft_ft_strtrim.o \
+	      $(LIBDIR)/libft_ft_split.o $(LIBDIR)/libft_ft_itoa.o $(LIBDIR)/libft_ft_strmapi.o \
+	      $(LIBDIR)/libft_ft_striteri.o $(LIBDIR)/libft_ft_putchar_fd.o $(LIBDIR)/libft_ft_putstr_fd.o \
+	      $(LIBDIR)/libft_ft_putendl_fd.o $(LIBDIR)/libft_ft_putnbr_fd.o $(LIBDIR)/libft_get_next_line.o
 
 # Full clean rule
 fclean: clean
-	rm -f $(LIBDIR)/*.a
+	rm -rf $(LIBDIR)/libexecution.a $(LIBDIR)/libparsing.a $(LIBDIR)/libtokenization.a $(LIBDIR)/libft.a
 
-# Phony targets
-.PHONY: all clean fclean
 
 
