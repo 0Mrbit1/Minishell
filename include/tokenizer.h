@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+#ifndef TOKENIZ_H
+# define TOKENIZ_H
 
 
 typedef char (*redir_func_ptr)(char*);
@@ -38,3 +40,4 @@ char is_PIPES(char *str) ;
 
 
 char is_WORD(char *str);
+#endif
