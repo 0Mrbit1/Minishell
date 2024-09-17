@@ -1,6 +1,4 @@
-
-
-
+#include "../../include/minishell.h"
 
 char is_INPUT_REDIRECTION(char *str) {
     if (!ft_strncmp(str, "<", ft_strlen(str) + 1 ))
