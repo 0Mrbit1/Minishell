@@ -51,60 +51,212 @@ LIBFT_SRCS = \
     $(LIBFT_DIR)/ft_putendl_fd.c $(LIBFT_DIR)/ft_putnbr_fd.c $(LIBFT_DIR)/get_next_line.c
 
 # Object files
-EXEC_OBJS = $(EXEC_SRCS:$(EXEC_DIR)/%.c=$(LIBDIR)/%.o)
-PARSE_OBJS = $(PARSE_SRCS:$(PARSE_DIR)/%.c=$(LIBDIR)/%.o)
-TOKEN_OBJS = $(TOKEN_SRCS:$(TOKEN_DIR)/%.c=$(LIBDIR)/%.o)
-LIBFT_OBJS = $(LIBFT_SRCS:$(LIBFT_DIR)/%.c=$(LIBDIR)/libft_%.o)
+EXEC_OBJS = $(LIBDIR)/builtins.o $(LIBDIR)/execute_command.o $(LIBDIR)/get_command_path.o \
+            $(LIBDIR)/input_redirection_herdoc.o $(LIBDIR)/output_redirection_append_mode.o \
+            $(LIBDIR)/piping.o $(LIBDIR)/dup_fd.o $(LIBDIR)/expand.o \
+            $(LIBDIR)/input_redirection.o $(LIBDIR)/output_error_exit.o \
+            $(LIBDIR)/output_redirection.o
+
+PARSE_OBJS = $(LIBDIR)/parser.o
+
+TOKEN_OBJS = $(LIBDIR)/tokenizer.o $(LIBDIR)/type_checkers.o
+
+LIBFT_OBJS = $(LIBDIR)/libft_ft_isalpha.o $(LIBDIR)/libft_ft_isdigit.o $(LIBDIR)/libft_ft_isalnum.o \
+             $(LIBDIR)/libft_ft_isascii.o $(LIBDIR)/libft_ft_isprint.o \
+             $(LIBDIR)/libft_ft_strlen.o $(LIBDIR)/libft_ft_memset.o $(LIBDIR)/libft_ft_bzero.o \
+             $(LIBDIR)/libft_ft_memcpy.o $(LIBDIR)/libft_ft_memmove.o $(LIBDIR)/libft_ft_strlcpy.o \
+             $(LIBDIR)/libft_ft_strlcat.o $(LIBDIR)/libft_ft_toupper.o $(LIBDIR)/libft_ft_tolower.o \
+             $(LIBDIR)/libft_ft_strchr.o $(LIBDIR)/libft_ft_strrchr.o $(LIBDIR)/libft_ft_strncmp.o \
+             $(LIBDIR)/libft_ft_memchr.o $(LIBDIR)/libft_ft_memcmp.o $(LIBDIR)/libft_ft_strnstr.o \
+             $(LIBDIR)/libft_ft_atoi.o $(LIBDIR)/libft_ft_calloc.o $(LIBDIR)/libft_ft_strdup.o \
+             $(LIBDIR)/libft_ft_substr.o $(LIBDIR)/libft_ft_strjoin.o $(LIBDIR)/libft_ft_strtrim.o \
+             $(LIBDIR)/libft_ft_split.o $(LIBDIR)/libft_ft_itoa.o $(LIBDIR)/libft_ft_strmapi.o \
+             $(LIBDIR)/libft_ft_striteri.o $(LIBDIR)/libft_ft_putchar_fd.o $(LIBDIR)/libft_ft_putstr_fd.o \
+             $(LIBDIR)/libft_ft_putendl_fd.o $(LIBDIR)/libft_ft_putnbr_fd.o $(LIBDIR)/libft_get_next_line.o
 
 # Default target
 all: $(LIBFT_LIB) $(EXEC_LIB) $(PARSE_LIB) $(TOKEN_LIB)
 
 # Rule to create the libft library
 $(LIBFT_LIB): $(LIBFT_OBJS)
-	@mkdir -p $(LIBDIR)
 	$(AR) $(ARFLAGS) $@ $(LIBFT_OBJS)
+	rm -f $(LIBFT_OBJS)
 
 # Rule to create the execution library
 $(EXEC_LIB): $(EXEC_OBJS) $(LIBFT_LIB)
-	@mkdir -p $(LIBDIR)
 	$(AR) $(ARFLAGS) $@ $(EXEC_OBJS)
+	rm -f $(EXEC_OBJS)
 
 # Rule to create the parsing library
 $(PARSE_LIB): $(PARSE_OBJS) $(LIBFT_LIB)
-	@mkdir -p $(LIBDIR)
 	$(AR) $(ARFLAGS) $@ $(PARSE_OBJS)
+	rm -f $(PARSE_OBJS)
 
 # Rule to create the tokenization library
 $(TOKEN_LIB): $(TOKEN_OBJS) $(LIBFT_LIB)
-	@mkdir -p $(LIBDIR)
 	$(AR) $(ARFLAGS) $@ $(TOKEN_OBJS)
+	rm -f $(TOKEN_OBJS)
 
 # Rule to compile libft objects
-$(LIBDIR)/libft_%.o: $(LIBFT_DIR)/%.c
-	@mkdir -p $(LIBDIR)
+$(LIBDIR)/libft_ft_isalpha.o: $(LIBFT_DIR)/ft_isalpha.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_isdigit.o: $(LIBFT_DIR)/ft_isdigit.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_isalnum.o: $(LIBFT_DIR)/ft_isalnum.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_isascii.o: $(LIBFT_DIR)/ft_isascii.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_isprint.o: $(LIBFT_DIR)/ft_isprint.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_strlen.o: $(LIBFT_DIR)/ft_strlen.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_memset.o: $(LIBFT_DIR)/ft_memset.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_bzero.o: $(LIBFT_DIR)/ft_bzero.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_memcpy.o: $(LIBFT_DIR)/ft_memcpy.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_memmove.o: $(LIBFT_DIR)/ft_memmove.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_strlcpy.o: $(LIBFT_DIR)/ft_strlcpy.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_strlcat.o: $(LIBFT_DIR)/ft_strlcat.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_toupper.o: $(LIBFT_DIR)/ft_toupper.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_tolower.o: $(LIBFT_DIR)/ft_tolower.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_strchr.o: $(LIBFT_DIR)/ft_strchr.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_strrchr.o: $(LIBFT_DIR)/ft_strrchr.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_strncmp.o: $(LIBFT_DIR)/ft_strncmp.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_memchr.o: $(LIBFT_DIR)/ft_memchr.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_memcmp.o: $(LIBFT_DIR)/ft_memcmp.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_strnstr.o: $(LIBFT_DIR)/ft_strnstr.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_atoi.o: $(LIBFT_DIR)/ft_atoi.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_calloc.o: $(LIBFT_DIR)/ft_calloc.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_strdup.o: $(LIBFT_DIR)/ft_strdup.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_substr.o: $(LIBFT_DIR)/ft_substr.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_strjoin.o: $(LIBFT_DIR)/ft_strjoin.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_strtrim.o: $(LIBFT_DIR)/ft_strtrim.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_split.o: $(LIBFT_DIR)/ft_split.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_itoa.o: $(LIBFT_DIR)/ft_itoa.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_strmapi.o: $(LIBFT_DIR)/ft_strmapi.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_striteri.o: $(LIBFT_DIR)/ft_striteri.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_putchar_fd.o: $(LIBFT_DIR)/ft_putchar_fd.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_putstr_fd.o: $(LIBFT_DIR)/ft_putstr_fd.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_putendl_fd.o: $(LIBFT_DIR)/ft_putendl_fd.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_ft_putnbr_fd.o: $(LIBFT_DIR)/ft_putnbr_fd.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/libft_get_next_line.o: $(LIBFT_DIR)/get_next_line.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Rule to compile execution objects
-$(LIBDIR)/%.o: $(EXEC_DIR)/%.c
-	@mkdir -p $(LIBDIR)
+$(LIBDIR)/builtins.o: $(EXEC_DIR)/builtins.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/execute_command.o: $(EXEC_DIR)/execute_command.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/get_command_path.o: $(EXEC_DIR)/get_command_path.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/input_redirection_herdoc.o: $(EXEC_DIR)/input_redirection_herdoc.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/output_redirection_append_mode.o: $(EXEC_DIR)/output_redirection_append_mode.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/piping.o: $(EXEC_DIR)/piping.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/dup_fd.o: $(EXEC_DIR)/dup_fd.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/expand.o: $(EXEC_DIR)/expand.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/input_redirection.o: $(EXEC_DIR)/input_redirection.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/output_error_exit.o: $(EXEC_DIR)/output_error_exit.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/output_redirection.o: $(EXEC_DIR)/output_redirection.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Rule to compile parsing objects
-$(LIBDIR)/%.o: $(PARSE_DIR)/%.c
-	@mkdir -p $(LIBDIR)
+$(LIBDIR)/parser.o: $(PARSE_DIR)/parser.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Rule to compile tokenization objects
-$(LIBDIR)/%.o: $(TOKEN_DIR)/%.c
-	@mkdir -p $(LIBDIR)
+$(LIBDIR)/tokenizer.o: $(TOKEN_DIR)/tokenizer.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBDIR)/type_checkers.o: $(TOKEN_DIR)/type_checkers.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean rule
 clean:
 	rm -f $(LIBDIR)/*.o
-fclean:
+
+# Full clean rule
+fclean: clean
 	rm -f $(LIBDIR)/*.a
 
 # Phony targets
-.PHONY: all clean
+.PHONY: all clean fclean
+
 
