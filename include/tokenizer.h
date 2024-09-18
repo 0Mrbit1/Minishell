@@ -40,4 +40,5 @@ char is_PIPES(char *str) ;
 
 
 char is_WORD(char *str);
+token	*tokenizer(char *prompt)  ;
 #endif

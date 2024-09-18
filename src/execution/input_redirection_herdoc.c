@@ -26,7 +26,7 @@ void redidrect_stdin_to_herdoc(char *delimiter )
     free(buffer);
 }
 
-void input_redirection_herdoc(char *delimiter  , char *cmd_path , char **argv , char **env)
+void input_redirection_herdoc(char *delimiter )
  {
     int heredoc_fd ; 
     
@@ -35,7 +35,5 @@ void input_redirection_herdoc(char *delimiter  , char *cmd_path , char **argv , 
      if (heredoc_fd < 0)
         output_error_exit("there was an error openning herdoc file" , 1);
     dup_fds(heredoc_fd , STDIN_FILENO);
-    execute_command(cmd_path ,argv , env);
-    unlink(".heredoc");
  }
 

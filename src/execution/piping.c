@@ -1,10 +1,6 @@
 #include "../../include/minishell.h"
 
-void execute_command(char *cmd_path, char **argv, char **env);
-void dup_fds(int old_fd, int new_fd);
-void output_error_exit(const char *msg, int exit_code);
-char *is_command(const char *cmd, char **env);
-
+    
 pid_t first_child_processe(char *cmd_path , char **argv , char **env, int **pipefd , int j )
 {
     pid_t pid;

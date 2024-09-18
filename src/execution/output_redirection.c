@@ -1,7 +1,7 @@
 #include "../../include/minishell.h"
 
 
-pid_t output_redirection(char *file_path , char *cmd_path , char **argv , char **env)
+void output_redirection(char *file_path)
 {
     int output_file_fd ; 
 
@@ -9,5 +9,4 @@ pid_t output_redirection(char *file_path , char *cmd_path , char **argv , char *
     if (output_file_fd < 0)
          output_error_exit("There was an error openning the output file" , 1);
     dup_fds(output_file_fd , STDOUT_FILENO ) ; 
-    return execute_command(cmd_path , argv , env) ;
 }
