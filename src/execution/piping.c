@@ -17,8 +17,7 @@ pid_t first_child_processe(char *cmd_path , char **argv , char **env, int **pipe
     }
     if (!pid)
     {
-        dup2(pipefd[j][1] , STDOUT_FILENO);
-        
+        dup2(pipefd[j][1] , STDOUT_FILENO);  
         while (i < j)
         {
             close(pipefd[i][0]);

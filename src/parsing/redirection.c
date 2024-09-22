@@ -1,4 +1,4 @@
-#include "mini_shell.h"
+#include "../../include/minishell.h"
  
 int is_HERE_DOC(char *token)
 {

@@ -1,7 +1,5 @@
-#include "mini_shell.h"
-#include <stdlib.h>
-#include <string.h>
-#include "mini_shell.h"
+#include "../../include/minishell.h"
+
  
 token *create_token(char *value, token_type type)
 {

@@ -1,5 +1,4 @@
-#include <stdlib.h>
-#include "mini_shell.h"
+#include "../../include/minishell.h"
  
 void free_parsed_command(t_command *cmd)
 {
