@@ -196,7 +196,7 @@ int main(int argc , char **argv , char **env)
 
     while (1337) 
     {
-        input=readline("minishell(*-*)> ");
+        input=readline("babyshell(*-*)> ");
         
         /******/    
         
