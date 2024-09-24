@@ -39,7 +39,6 @@ char	*cmd_helper(char *cmd, char *PATH_VARIABLE)
 
 char	*get_command_path(char *cmd, char *PATH_VARIABLE)
 {
-	char	*cmd_path;
     char     *resp;
 
 	cmd = ft_strjoin("/", cmd);

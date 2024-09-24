@@ -1,4 +1,4 @@
-#include "minishell.h"
+/*#include "minishell.h"
 
 #ifndef TOKENIZ_H
 # define TOKENIZ_H
@@ -41,4 +41,4 @@ char is_PIPES(char *str) ;
 
 char is_WORD(char *str);
 token	*tokenizer(char *prompt)  ;
-#endif
+#endif*/

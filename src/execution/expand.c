@@ -18,7 +18,7 @@ int array_size ;
 
 i = 0 ;
 array_size = calculate_array_size(last_array) ; 
-new_array = malloc(sizeof(char*)*( array_size + 2  )    ) ; 
+new_array = malloc(sizeof(char*)*( array_size + 2  )  ) ; 
 
 while (last_array[i])
 {
@@ -106,7 +106,7 @@ char **ft_unset(char **env  , char *var)
     return smaller_array;   
 }
 
-int main(int argc , char **argv , char **env )
+/*int main(int argc , char **argv , char **env )
 {
 
     int i ; 
@@ -142,8 +142,4 @@ int main(int argc , char **argv , char **env )
         i++;
     } 
     return 0 ; 
-
-
-
-
-}
+}*/

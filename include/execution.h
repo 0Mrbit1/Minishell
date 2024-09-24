@@ -4,7 +4,6 @@
 # define EXEC_H
 
 void output_redirection(char *file_path); 
-int pipex(int argc , char **argv , char **env); 
  void output_redirection_append_mode(char *file_path );
 void output_error_exit(char *error_msg , int status);
 void  input_redirection (char *file_path );
@@ -16,6 +15,7 @@ void dup_fds(int old_fd , int new_fd);
 char ft_cd(char* path);
 void ft_env(char **envp);
 void ft_echo(int line , char *str);
+char	*is_command(char *cmd, char **env) ; 
 
 #endif
 

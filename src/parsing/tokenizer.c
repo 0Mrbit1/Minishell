@@ -1,6 +1,6 @@
 #include "../../include/minishell.h"
 
- 
+
 token *create_token(char *value, token_type type)
 {
     token *new_token;

@@ -133,27 +133,3 @@ t_command *parse_command(token *tokens)
     cmd->args[arg_count] = NULL;  // Null-terminate the arguments array
     return cmd;
 }
-
-
-void print_parsed_command(t_command *cmd)
-{
-    while (cmd)
-    {
-        int i = 0;
-        printf("command: %s\n", cmd->command);
-        printf("arguments: ");
-        while (cmd->args[i] != NULL)
-        {
-            printf("%s ", cmd->args[i]);
-            i++;
-        }
-        printf("\n");
-
-        if (cmd->input_redirect)
-            printf("input_Redirection: %s\n", cmd->input_redirect);
-        if (cmd->output_redirect)
-            printf("output_Redirection: %s\n", cmd->output_redirect);
-         printf("\n");
-        cmd = cmd->next;  // move to the next command (for pipes)
-    }
-}
