@@ -128,7 +128,7 @@ int pipex(t_command *prompt , char **env)
             if (execve(cmd_path , prompt->args , env) < 0 ) 
                 output_error_exit("command" , 127);
         }
-        wait(pid);
+        wait(NULL);
         return 0 ; 
 
     }
@@ -188,12 +188,17 @@ int main(int argc , char **argv , char **env)
     char *input = NULL;
     token *tokens = NULL;
     t_command *cmd_list = NULL;
+    
+
+    (void)argc ;
+    (void)argv;
+
 
     while (1337) 
     {
         input=readline("minishell(*-*)> ");
         
-        /******/   
+        /******/    
         
         tokens = tokenizer(input);   
         cmd_list = parse_command(tokens);
