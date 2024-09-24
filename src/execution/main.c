@@ -116,15 +116,33 @@ int pipex(t_command *prompt , char **env)
         j++;
     }
     j = 0;
-    if (pipe(fds[j]) < 0)
-        output_error_exit("pipe" , EXIT_FAILURE);
-    cmd_path = is_command(prompt->command , env);
-    if (!cmd_path)
-        cmd_path = prompt->command;
-    first_child_processe(cmd_path , prompt->args , env, fds , j);
-    j++;
-    prompt = prompt -> next ;
-    ;  
+    if (lst_size == 1)
+    {
+        cmd_path = is_command(prompt->command , env);
+        if (!cmd_path)
+            cmd_path = prompt->command;
+        pid = fork() ; 
+
+        if (!pid)
+        {
+            if (execve(cmd_path , prompt->args , env) < 0 ) 
+                output_error_exit("command" , 127);
+        }
+        wait(pid);
+        return 0 ; 
+
+    }
+
+        if (pipe(fds[j]) < 0)
+            output_error_exit("pipe" , EXIT_FAILURE);
+        cmd_path = is_command(prompt->command , env);
+        if (!cmd_path)
+            cmd_path = prompt->command;
+    
+        first_child_processe(cmd_path , prompt->args , env, fds , j);
+        j++;
+        prompt = prompt -> next ;
+     
     while (j < lst_size - 1  ) 
     {
         cmd_path = is_command(prompt->command, env);
