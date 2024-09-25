@@ -9,7 +9,7 @@ pid_t first_child_processe(t_command *prompt  ,  char *cmd_path , char **argv , 
 
     if (!strcmp(prompt->command , "cd"))
     {
-       ft_cd((prompt->args)[0]);
+       ft_cd((prompt->args)[1]);
         return 0 ; 
     }
 
@@ -64,7 +64,7 @@ pid_t middle_child_processes(t_command *prompt  , char *cmd_path , char **argv ,
 
       if (!strcmp(prompt->command , "cd"))
     {
-        ft_cd((prompt->args)[0]); 
+        ft_cd((prompt->args)[1]); 
         return 0 ; 
     }
 
@@ -112,7 +112,7 @@ pid_t ending_child_processe(t_command *prompt , char *cmd_path , char **argv , i
 
       if (!strcmp(prompt->command , "cd"))
     {
-            ft_cd((prompt->args)[0]);
+            ft_cd((prompt->args)[1]);
         return 0 ; 
     } 
 
@@ -190,7 +190,7 @@ int pipex(t_command *prompt , char **env)
 
         if (!strcmp(prompt->command , "cd"))
         {
-            ft_cd((prompt->args)[0]) ; 
+            ft_cd((prompt->args)[1]) ; 
             return 0 ; 
         }
         pid = fork() ; 
