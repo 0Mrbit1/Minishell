@@ -1,10 +1,11 @@
 #include "../../include/minishell.h"
 
     
-pid_t first_child_processe(char *cmd_path , char **argv , char **env, int **pipefd , int j )
+pid_t first_child_processe(t_command *prompt  ,  char *cmd_path , char **argv , char **env, int **pipefd , int j )
 {
     pid_t pid;
     int i ;
+    int fd ; 
 
     i = 0;
 
@@ -17,7 +18,24 @@ pid_t first_child_processe(char *cmd_path , char **argv , char **env, int **pipe
     }
     if (!pid)
     {
-        dup2(pipefd[j][1] , STDOUT_FILENO);  
+        if (prompt->input_redirect)
+        {
+            fd = open(prompt->input_redirect , O_RDONLY) ; 
+            dup2(fd , STDIN_FILENO );  
+        }
+
+        if (prompt->output_redirect)
+        {
+            fd = open(prompt->output_redirect , O_WRONLY) ; 
+            dup2(fd , STDOUT_FILENO );  
+        }
+
+        if ( !prompt->input_redirect && !prompt->output_redirect)
+        {
+             dup2(pipefd[j][1] , STDOUT_FILENO);  
+
+        }
+
         while (i < j)
         {
             close(pipefd[i][0]);
@@ -29,10 +47,11 @@ pid_t first_child_processe(char *cmd_path , char **argv , char **env, int **pipe
     return pid;
 }
 
-pid_t middle_child_processes(char *cmd_path , char **argv ,  int **pipefd , char **env , int j )
+pid_t middle_child_processes(t_command *prompt  , char *cmd_path , char **argv ,  int **pipefd , char **env , int j )
 {
     pid_t pid;
     int i ;
+    int fd ; 
 
     i = 0 ;
 
@@ -45,8 +64,23 @@ pid_t middle_child_processes(char *cmd_path , char **argv ,  int **pipefd , char
     }
     if (!pid)
     {
+         if (prompt->input_redirect)
+        {
+            fd = open(prompt->input_redirect , O_RDONLY) ; 
+            dup2(fd , STDIN_FILENO );  
+        }
+
+        if (prompt->output_redirect)
+        {
+            fd = open(prompt->output_redirect , O_RDONLY) ; 
+            dup2(fd , STDOUT_FILENO );  
+        }
+
+        if ( !prompt->input_redirect && !prompt->output_redirect)
+        {
         dup_fds(pipefd[j][1] , STDOUT_FILENO);
         dup_fds(pipefd[j-1][0] , STDIN_FILENO);
+        }
 
         while (i < j)
     {
@@ -59,10 +93,11 @@ pid_t middle_child_processes(char *cmd_path , char **argv ,  int **pipefd , char
     return pid;
 }
 
-pid_t ending_child_processe(char *cmd_path , char **argv , int **pipefd , char **env , int j )
+pid_t ending_child_processe(t_command *prompt , char *cmd_path , char **argv , int **pipefd , char **env , int j )
 {
     pid_t pid;
     int i ;
+    int fd ; 
 
     i = 0 ;
 
@@ -75,7 +110,23 @@ pid_t ending_child_processe(char *cmd_path , char **argv , int **pipefd , char *
     }
     if (!pid)
     {
-        dup_fds(pipefd[j-1][0] ,   STDIN_FILENO );
+         if (prompt->input_redirect)
+        {
+            fd = open(prompt->input_redirect , O_RDONLY) ; 
+            dup2(fd , STDIN_FILENO );  
+        }
+
+        if (prompt->output_redirect)
+        {
+            fd = open(prompt->output_redirect , O_RDONLY) ;
+            dup2(fd , STDOUT_FILENO );  
+        }
+
+        if ( !prompt->input_redirect && !prompt->output_redirect)
+        {
+            printf("here");
+            dup_fds(pipefd[j-1][0] ,   STDIN_FILENO );
+        }
 
         while (i < j)
     {
@@ -100,16 +151,17 @@ int pipex(t_command *prompt , char **env)
 {
     int  j;
     char *cmd_path;
-    int  **fds; 
+    int  **fds;
     int  status;
     int  final_pid;
     int  pid;
     int  final_status;
     int lst_size;
+    int fd ;
 
     lst_size = ft_lstsize(prompt);
     fds = malloc(sizeof(int*)*( lst_size ));
-    j = 0 ; 
+    j = 0;
     while( j < lst_size )
     {
         fds[j] = malloc(sizeof(int)*2);
@@ -125,7 +177,19 @@ int pipex(t_command *prompt , char **env)
 
         if (!pid)
         {
-            if (execve(cmd_path , prompt->args , env) < 0 ) 
+
+        if (prompt->input_redirect)
+        {
+            fd = open(prompt->input_redirect , O_RDONLY) ; 
+            dup2(fd , STDIN_FILENO );  
+        }
+
+        if (prompt->output_redirect)
+        {
+            fd = open(prompt->output_redirect , O_WRONLY) ; 
+            dup2(fd , STDOUT_FILENO );  
+        }
+        if (execve(cmd_path , prompt->args , env) < 0 ) 
                 output_error_exit("command" , 127);
         }
         wait(NULL);
@@ -138,8 +202,8 @@ int pipex(t_command *prompt , char **env)
         cmd_path = is_command(prompt->command , env);
         if (!cmd_path)
             cmd_path = prompt->command;
-    
-        first_child_processe(cmd_path , prompt->args , env, fds , j);
+
+        first_child_processe(prompt , cmd_path , prompt->args , env, fds , j);
         j++;
         prompt = prompt -> next ;
      
@@ -150,7 +214,7 @@ int pipex(t_command *prompt , char **env)
             cmd_path = prompt->command;
         if ( pipe ( fds[j] )  < 0   )
             output_error_exit("pipe" , EXIT_FAILURE);  
-        middle_child_processes(cmd_path , prompt->args ,  fds , env , j  );
+        middle_child_processes(prompt , cmd_path , prompt->args ,  fds , env , j  );
         j++ ;
        prompt = prompt -> next ; 
     }
@@ -163,7 +227,7 @@ int pipex(t_command *prompt , char **env)
     if ( pipe(fds[j]) < 0 )
         output_error_exit("pipe" , EXIT_FAILURE);
     
-    final_pid = ending_child_processe( cmd_path ,  prompt->args ,  fds ,  env , j);
+    final_pid = ending_child_processe(prompt, cmd_path ,  prompt->args ,  fds ,  env , j);
     j = 0 ; 
     while (j < lst_size)
     {
@@ -179,7 +243,7 @@ int pipex(t_command *prompt , char **env)
            is_exit_with_signal(&final_status) ; 
         }
     }
-    return 0 ;  
+    return 0 ;
 }
 
 int main(int argc , char **argv , char **env)
@@ -189,10 +253,8 @@ int main(int argc , char **argv , char **env)
     token *tokens = NULL;
     t_command *cmd_list = NULL;
     
-
     (void)argc ;
     (void)argv;
-
 
     while (1337) 
     {
@@ -201,7 +263,7 @@ int main(int argc , char **argv , char **env)
         /******/    
         
         tokens = tokenizer(input);   
-        cmd_list = parse_command(tokens);
+        cmd_list = parse_command(tokens); 
 
         pipex(cmd_list , env) ; 
         free(input);
