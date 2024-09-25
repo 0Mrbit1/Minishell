@@ -14,9 +14,7 @@ pid_t first_child_processe(t_command *prompt  ,  char *cmd_path , char **argv , 
     }
 
     i = 0;
-
     pid = fork();
-    
     if (pid < 0)
     {
         perror("fork");
@@ -24,25 +22,18 @@ pid_t first_child_processe(t_command *prompt  ,  char *cmd_path , char **argv , 
     }
     if (!pid)
     {
-      
-        dup2(pipefd[j][1] , STDOUT_FILENO);  
-
+        dup2(pipefd[j][1] , STDOUT_FILENO); 
+        close (pipefd[j][0]);
         if (prompt->input_redirect)
         {
             fd = open(prompt->input_redirect , O_RDONLY) ; 
             dup2(fd , STDIN_FILENO );  
         }
-
         if (prompt->output_redirect)
         {
-            fd = open(prompt->output_redirect , O_WRONLY) ; 
+            fd = open(prompt->output_redirect , O_WRONLY| O_CREAT) ; 
             dup2(fd , STDOUT_FILENO );  
         }
-
-        
-
-        
-
         while (i < j)
         {
             close(pipefd[i][0]);
@@ -89,7 +80,7 @@ pid_t middle_child_processes(t_command *prompt  , char *cmd_path , char **argv ,
 
         if (prompt->output_redirect)
         {
-            fd = open(prompt->output_redirect , O_WRONLY) ; 
+            fd = open(prompt->output_redirect , O_WRONLY| O_CREAT) ; 
             dup2(fd , STDOUT_FILENO );  
         }
 
@@ -127,10 +118,8 @@ pid_t ending_child_processe(t_command *prompt , char *cmd_path , char **argv , i
     }
     if (!pid)
     {
-
-        
         dup_fds(pipefd[j-1][0] ,   STDIN_FILENO );
-           if (prompt->input_redirect)
+        if (prompt->input_redirect)
         {
             fd = open(prompt->input_redirect , O_RDONLY) ; 
             dup2(fd , STDIN_FILENO );  
@@ -138,11 +127,11 @@ pid_t ending_child_processe(t_command *prompt , char *cmd_path , char **argv , i
 
         if (prompt->output_redirect)
         {
-            fd = open(prompt->output_redirect , O_WRONLY) ;
+            fd = open(prompt->output_redirect , O_WRONLY | O_CREAT) ;
             dup2(fd , STDOUT_FILENO );  
         }
-
-        while (i < j)
+        
+        while (i < j )
     {
         close(pipefd[i][0]);
         close(pipefd[i][1]);
@@ -206,7 +195,7 @@ int pipex(t_command *prompt , char **env)
 
         if (prompt->output_redirect)
         {
-            fd = open(prompt->output_redirect , O_WRONLY) ; 
+            fd = open(prompt->output_redirect , O_WRONLY | O_CREAT) ; 
             dup2(fd , STDOUT_FILENO );  
         }
         if (execve(cmd_path , prompt->args , env) < 0 ) 
@@ -214,9 +203,7 @@ int pipex(t_command *prompt , char **env)
         }
         wait(NULL);
         return 0 ; 
-
     }
-
         if (pipe(fds[j]) < 0)
             output_error_exit("pipe" , EXIT_FAILURE);
         cmd_path = is_command(prompt->command , env);
@@ -243,21 +230,18 @@ int pipex(t_command *prompt , char **env)
     {
         cmd_path = prompt->command;
     }
-    
     if ( pipe(fds[j]) < 0 )
         output_error_exit("pipe" , EXIT_FAILURE);
     
     final_pid = ending_child_processe(prompt, cmd_path ,  prompt->args ,  fds ,  env , j);
     j = 0 ; 
-    while (j < lst_size)
-    {
-
-        close(fds[j][0]);
-        close(fds[j][1]);
-        j++;
-    }
+    while (j < lst_size  )
+        {
+            close(fds[j][0]);
+            close(fds[j][1]);
+            j++;
+        }
     while ((pid = wait(&status)) != -1) {
-        
         if (pid == final_pid) {
             final_status = status ; 
            is_exit_with_signal(&final_status) ; 
