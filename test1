@@ -1,9 +1,0 @@
-include
-libexecution.a
-libft.a
-libparsing.a
-Makefile
-minishell
-src
-test1
-tests
