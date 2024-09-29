@@ -12,7 +12,7 @@ char	*is_command(char *cmd, char **env);
 char **ft_unset(char **env  , char *var);
 void execute_command(char *command_path , char **argv , char **env);
 void dup_fds(int old_fd , int new_fd);
-char ft_cd(char* path);
+char ft_cd(char* path , char **env);
 void ft_env(char **envp);
 void ft_echo(int line , char *str);
 char	*is_command(char *cmd, char **env) ; 

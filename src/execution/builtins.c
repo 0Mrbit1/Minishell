@@ -1,5 +1,33 @@
 #include "../../include/minishell.h"
 
+
+int ft_strlen_delimiter(char *str , char delimiter)
+{
+    int i ; 
+
+    i = 0 ;
+    while (str[i]  && (str[i] != delimiter)   )
+    {
+        i++;
+    }
+    return i ; 
+
+}
+int search_key(char **env , char *to_search)
+{
+    int i ;
+ 
+    i = 0 ;
+    while (env[i])
+    { 
+        if (   !    ft_strncmp( env[i] , to_search  , ft_strlen_delimiter(env[i] , '=')  )            )  
+        {
+            return i ; 
+        }
+        i++;
+    }
+    return -1; 
+}
 void ft_echo(int line , char *str)
 {
     if (line)
@@ -23,11 +51,25 @@ void ft_env(char **envp)
     }
 }
 
-char ft_cd(char* path)
+char ft_cd(char* path , char **env)
 {
     char *current_path; 
     struct stat fstats;
     int path_len ;
+    char *home_path ; 
+  
+
+    if (!path)
+    {
+        home_path = env[   search_key(env , "HOME")   ] ;
+      
+
+        while(*home_path != '=')
+            home_path++;
+        chdir(++home_path); 
+        return 1 ; 
+
+    }
 
     path_len = ft_strlen (path)  + 1 ;
     if (stat(path, &fstats) < 0)
