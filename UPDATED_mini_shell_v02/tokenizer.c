@@ -175,32 +175,71 @@ char *next_token(const char **str)
     return token;
 }
 
-/***************/
- 
+/********#*******/
+/**-----------**/
+/********#******/
 char *extract_quoted_string(const char **str)
 {
-    char quote = **str;   
-    (*str)++;   
+    char quote = **str;
+    (*str)++;
     const char *start = *str;
-
-     while (**str && **str != quote)
-        (*str)++;
-
-    if (**str != quote) {
-        printf("error unmatched quote detected.\n");
-        return NULL;  
+    size_t total_len = 0;
+    size_t current_buffer_size = 128; // start with an initial buffer size
+    char *quoted_string = malloc(current_buffer_size);
+    if(!quoted_string)
+    {
+        printf("error allocation.\n");
+        return NULL;
     }
-
-    size_t len = *str - start;
-    char *quoted_string = (char *)malloc(len + 1);
-    strncpy(quoted_string, start, len);
-    quoted_string[len] = '\0';
-
-    (*str)++;   
-
+    quoted_string[0] = '\0'; //start with an empty string
+    while(1337)
+    {
+        // moving until the closing quote is found or end of input
+        while(**str && **str != quote)
+        {
+            (*str)++;
+        }
+        size_t len = *str - start;
+        total_len += len;
+        // check for if we need to increase the buffer size manually
+     if (total_len >= current_buffer_size - 1)
+        {
+            char *new_quoted_string = malloc(total_len + 1 + 128); // allocate for a bigger buffer
+            if(!new_quoted_string)
+            {
+                printf("Memory allocation error.\n");
+                free(quoted_string);
+                return NULL;
+            }
+            strcpy(new_quoted_string, quoted_string);
+            free(quoted_string);
+            quoted_string = new_quoted_string;
+            current_buffer_size = total_len + 1 + 128;
+        }
+        // append the current part for quoted string
+        strncat(quoted_string, start, len);
+        // if we found the closing quote  break
+        if(**str == quote)
+        {
+            (*str)++; //move past the closing quote
+            break;
+        }
+        //asking for more input
+        char *additional_input = readline("quote> ");
+        if(additional_input == NULL)
+        {
+            printf("Error: unmatched quote detected and no more input.\n");
+            free(quoted_string);
+            return NULL;
+        }
+        // update start to point to the new input for  processing
+        start = additional_input;
+        *str = additional_input;
+    }
     return quoted_string;
 }
-
+ /*************/
+/*-------------*/
  /*************/
 
 void free_token_list(token *head)
