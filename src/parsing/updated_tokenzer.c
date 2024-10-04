@@ -195,7 +195,7 @@ char *next_token(const char **str)
  * extract a quoted string, returning the content inside the quotes.
  *
  */
-
+// extracts the full content of a quoted string, handling single (') and double (")
 char *extract_quoted_string(const char **str)
 {
     char quote = **str;  // Capture whether it's ' or "
