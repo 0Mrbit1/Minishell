@@ -1,7 +1,0 @@
-in.txt
-in1.txt
-in2.txt
-in3.txt
-in4.txt
-txt_files.txt
-txt_files1.txt

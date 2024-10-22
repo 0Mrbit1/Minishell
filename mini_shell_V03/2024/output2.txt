@@ -1,2 +1,0 @@
-in1.txt
-txt_files1.txt
